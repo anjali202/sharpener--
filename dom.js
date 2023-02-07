@@ -37,17 +37,25 @@ for (var i=0; i < items.length; i++)
  */
 
 //QUERY SELECTOR //
-var header = document.querySelector(' #main-header');
+var header = document.querySelector('#main-header');
 header.style.borderbottom ='solid 4px #ccc';
 
-//var input = document.querySelector('input');
-//input.value = 'Hello World'
+var input = document.querySelector('input');
+input.value = 'Hello World'
 
-//var input = document.querySelector('input[type="submit"]');
-//SubmitEvent.value ="SEND"
+var submit  = document.querySelector('input[type="submit"]');
+submit.value ="SEND"
 
-//var item = document.querySelector('.list-group-item');
-//item.style.color = 'red';
+var item = document.querySelector('.list-group-item');
+item.style.color = 'red';
 
+var lastItem = document.querySelector('.list-group-item:last-child');
+lastItem.style.color = 'blue';
+
+var secondItem = document.querySelector('.list-group-item:nth-child(2)');
+secondItem.style.color = 'coral';
+
+var thirdItem = document.querySelector('.list-group-item:nth-child(3)');
+thirdItem.style.color = 'white';
 
 
