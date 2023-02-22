@@ -1,43 +1,151 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dom task 12</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
   <body>
+    <form action="" onsubmit="dataHandler(event)">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required />
+      <label for="email">Email:</label>
+      <input type="text" id="email" required />
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" required />
+      <button type="submit">Submit</button>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js"></script>
+    <div class="users"></div>
+  </body>
+  <script>
+    const form = document.forms[0];
+    const users = document.querySelector(".users");
+    users.addEventListener("click", (e) => {
+      if (
+        e.target.classList.contains("delete") ||
+        e.target.classList.contains("edit")
+      ) {
+        deleteUser(e);
+      }
+    });
+    // console.log(form, users, form.children[0]);
 
-   <form onsubmit="saveToLocalStorage(event)">
+    function dataHandler(e, obj) {
+      e.preventDefault();
+      console.log(obj);
+      const name = form.children[1].value;
+      const email = form.children[3].value;
+      const phone = form.children[5].value;
+      let user;
+      if (obj) {
+        user = obj.name + " -- " + obj.email + " -- " + obj.phone;
+      } else {
+        user = name + " -- " + email + " -- " + phone;
+      }
+      const p = document.createElement("p");
+      const deleteBtn = document.createElement("input");
+      const editBtn = document.createElement("input");
 
-       <label> Name</label>
+      p.textContent = user;
+      deleteBtn.className = "delete";
+      deleteBtn.type = "button";
+      deleteBtn.value = "Delete";
+      editBtn.className = "edit";
+      editBtn.type = "button";
+      editBtn.value = "Edit";
 
-       <input type="text" name="username" required/>
+      p.appendChild(deleteBtn);
+      p.appendChild(editBtn);
+      users.appendChild(p);
 
-       <label> EmailId</label>
+      //setting data to local storage
+      if (!obj) {
+        const myObj = {
+          name,
+          email,
+          phone,
+        };
+        axios
+          .post(
+            "https://crudcrud.com/api/0d7e8d6ee891451a97a911016a8268db/appointmentData",
+            myObj
+          )
+          .then((response) => {
+            p.id = response.data._id;
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        const myObj1 = {
+          name,
+          email,
+          phone,
+        };
 
-       <input type="email" name="emailId" required/>
+        // localStorage.setItem(email, JSON.stringify(myObj));
+        // console.log('Data saved to local storage');
 
-       <label> Phone Number</label>
+        form.children[1].value = "";
+        form.children[3].value = "";
+        form.children[5].value = "";
+      }
+    }
 
-       <input type="tel" name="phonenumber" /> 
-       <button> Submit </button>
+    window.addEventListener("DOMContentLoaded", (e) => {
+      axios
+        .get(
+          "https://crudcrud.com/api/0d7e8d6ee891451a97a911016a8268db/appointmentData"
+        )
+        .then((response) => {
+          console.log(response);
 
-</form>
-   <script>
-       function saveToLocalStorage (event)
-        {
-           event.preventDefault();
+          for (var i = 0; i < response.data.length; i++) {
+            dataHandler(e, response.data[i]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
 
-            const name = event.target.username.value;
-            const email= event.target.emailid.value;
-            const phonenumber= event.target.phonenumber.value;
+    function deleteUser(e) {
+      let userData = e.target.parentElement.innerText;
+      let userName = userData.split(" -- ")[0];
+      let userEmail = userData.split(" -- ")[1];
+      let userPhone = userData.split(" -- ")[2];
 
-            localStorage.setItem('name', name);
-            localStorage.setItem('emailid', emailid) 
-            localStorage.setItem( 'phonenumber', phonenumber)
-
-
-
-}
-
-
-</script>
-
-
-</body>
+      users.removeChild(e.target.parentElement);
+      // localStorage.removeItem(userEmail);
+      let userid = e.target.parentElement.id;
+      console.log(userid);
+      axios
+        .delete(
+          `https://crudcrud.com/api/0d7e8d6ee891451a97a911016a8268db/appointmentData/${userid}`
+        )
+        .then((response) => {
+          console.log(response);
+        });
+      if (e.target.classList.contains("edit")) {
+        form.children[1].value = userName;
+        form.children[3].value = userEmail;
+        form.children[5].value = userPhone;
+      }
+    }
+  </script>
 </html>
