@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dom task 12</title>
+    <title>Project No.1</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -19,133 +19,197 @@
     ></script>
   </head>
 
-  <body>
-    <form action="" onsubmit="dataHandler(event)">
-      <label for="name">Name:</label>
+  <body onload="fetchdata(event)">
+    <form action=" " onsubmit=" getDetails(event)">
+      <label for="name ">Product Name:</label>
       <input type="text" id="name" required />
-      <label for="email">Email:</label>
-      <input type="text" id="email" required />
-      <label for="phone">Phone:</label>
-      <input type="tel" id="phone" required />
-      <button type="submit">Submit</button>
+      <label for="price"> Product Price:</label>
+      <input type="text" id="price" required />
+      <select name="Category" id="category">
+        <option value="food" selected>food</option>
+        <option value="appliances">appliances</option>
+        <option value="fashion">fashion</option>
+      </select>
+      <button type="submit">Add Product</button>
     </form>
+    <h2>PRODUCTS</h2>
+    <span class="editid"></span>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.3/axios.min.js"></script>
     <div class="users"></div>
+    <ul id="products" class=""></ul>
+    <p class="">Total Products : <span class="totalPrice">0</span></p>
+    <div class="allcategory">
+      <label><h3>FOOD</h3> </label>
+      <ul id="item1"></ul>
+      <label><h3>APPLIANCES</h3> </label>
+      <ul id="item2"></ul>
+      <label><h3>FASHION</h3> </label>
+      <ul id="item3"></ul>
+    </div>
   </body>
   <script>
     const form = document.forms[0];
     const users = document.querySelector(".users");
-    users.addEventListener("click", (e) => {
+    const allcategory= document.querySelector(".allcategory");
+    const totalPrice = document.querySelector(".totalPrice");
+    const P = document.getElementById("price");
+    const inputName = document.getElementById("name");
+    const pCategory = document.getElementById("category");
+    const item1 = document.getElementById("item1");
+    const item2 = document.getElementById("item2");
+    const item3 = document.getElementById("item3");
+    
+    allcategory.addEventListener("click", (event) => {
       if (
-        e.target.classList.contains("delete") ||
-        e.target.classList.contains("edit")
+        event.target.classList.contains("delete") ||
+        event.target.classList.contains("edit")
       ) {
-        deleteUser(e);
+        deleteUser(event);
       }
-    });
-    // console.log(form, users, form.children[0]);
+    })
+    function deleteUser(event){
+      let userData = event.target.parentElement.innerText;
+      let user1 = userData.split(" - ")[0];
+      let user2 = userData.split(" - ")[1];
 
-    function dataHandler(e, obj) {
-      e.preventDefault();
-      console.log(obj);
-      const name = form.children[1].value;
-      const email = form.children[3].value;
-      const phone = form.children[5].value;
-      let user;
-      if (obj) {
-        user = obj.name + " -- " + obj.email + " -- " + obj.phone;
-      } else {
-        user = name + " -- " + email + " -- " + phone;
-      }
-      const p = document.createElement("p");
-      const deleteBtn = document.createElement("input");
-      const editBtn = document.createElement("input");
-
-      p.textContent = user;
-      deleteBtn.className = "delete";
-      deleteBtn.type = "button";
-      deleteBtn.value = "Delete";
-      editBtn.className = "edit";
-      editBtn.type = "button";
-      editBtn.value = "Edit";
-
-      p.appendChild(deleteBtn);
-      p.appendChild(editBtn);
-      users.appendChild(p);
-
-      //setting data to local storage
-      if (!obj) {
-        const myObj = {
-          name,
-          email,
-          phone,
-        };
-        axios
-          .post(
-            "https://crudcrud.com/api/0d7e8d6ee891451a97a911016a8268db/appointmentData",
-            myObj
-          )
-          .then((response) => {
-            p.id = response.data._id;
-            console.log(response);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        const myObj1 = {
-          name,
-          email,
-          phone,
-        };
-
-        // localStorage.setItem(email, JSON.stringify(myObj));
-        // console.log('Data saved to local storage');
-
-        form.children[1].value = "";
-        form.children[3].value = "";
-        form.children[5].value = "";
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", (e) => {
-      axios
-        .get(
-          "https://crudcrud.com/api/0d7e8d6ee891451a97a911016a8268db/appointmentData"
-        )
-        .then((response) => {
-          console.log(response);
-
-          for (var i = 0; i < response.data.length; i++) {
-            dataHandler(e, response.data[i]);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-
-    function deleteUser(e) {
-      let userData = e.target.parentElement.innerText;
-      let userName = userData.split(" -- ")[0];
-      let userEmail = userData.split(" -- ")[1];
-      let userPhone = userData.split(" -- ")[2];
-
-      users.removeChild(e.target.parentElement);
-      // localStorage.removeItem(userEmail);
-      let userid = e.target.parentElement.id;
+      allcategory.removeChild(event.target.parentElement);
+      
+      let userid = event.target.parentElement.id;
       console.log(userid);
       axios
         .delete(
-          `https://crudcrud.com/api/0d7e8d6ee891451a97a911016a8268db/appointmentData/${userid}`
+          `https://crudcrud.com/api/bd3c794d19ed4d02b753723ce5394527/SD/${userid}`
         )
         .then((response) => {
           console.log(response);
         });
-      if (e.target.classList.contains("edit")) {
-        form.children[1].value = userName;
-        form.children[3].value = userEmail;
-        form.children[5].value = userPhone;
+      if (event.target.classList.contains("edit")) {
+        form.children[1].value = user1;
+        form.children[3].value = user2;
+        
       }
+
+
     }
+    function fetchdata(event) {
+      const pricep = event.target.value;
+      let total = 0;
+      axios
+        .get("https://crudcrud.com/api/bd3c794d19ed4d02b753723ce5394527/SD")
+        .then((resolve) => {
+          if (resolve.data[0]) {
+            resolve.data.forEach((p) => {
+              total += +p.price;
+              getDetails(event, p.price, p.product, p.pCategory);
+            });
+          }
+          totalPrice.textContent = total;
+        });
+    }
+
+    function saveData(obj) {
+      axios
+        .post(
+          "https://crudcrud.com/api/bd3c794d19ed4d02b753723ce5394527/SD",
+          obj
+        )
+        .then((event) => console.log(event))
+
+        .catch((event) => console.log(event));
+    }
+
+    function getDetails(event, pricep, namep, Category) {
+      event.preventDefault();
+
+      const li = document.createElement("li");
+
+      const deleteBtn = document.createElement("input");
+      deleteBtn.type = "button";
+      deleteBtn.value = "delete";
+      deleteBtn.onclick = (event) => {
+        //console.log(event.target.parentElement)
+        event.target.parentElement.parentElement.removeChild(li);
+      };
+      //li.appendChild(deleteBtn);
+      const editBtn = document.createElement("input");
+      editBtn.type = "button";
+      editBtn.value = "edit";
+
+      // const p = document.createElement("p");
+
+      deleteBtn.className = "delete";
+      editBtn.className = "edit";
+      
+
+      if (!pricep && !namep) {
+        const obj = {
+          product: inputName.value.trim(),
+          price: P.value.trim(),
+          pCategory: pCategory.value.trim(),
+        };
+
+        li.textContent = obj.price + " - " + obj.product + " - " + obj.pCategory;
+
+        if (obj.pCategory == "food") {
+          item1.appendChild(li);
+        } else if (obj.pCategory == "appliances") {
+          item2.appendChild(li);
+        } else {
+          item3.appendChild(li);
+        }
+
+        totalPrice.textContent =
+          parseInt(totalPrice.textContent) + parseInt(P.value);
+
+        P.value = "";
+        inputName.value = "";
+        saveData(obj);
+      } 
+      else {
+        li.textContent = pricep + " - " + namep + " - " + Category;
+
+        if (Category == "food") {
+          item1.appendChild(li);
+        } else if (Category == "appliances") {
+          item2.appendChild(li);
+        } else {
+          item3.appendChild(li);
+        }
+      }
+      li.appendChild(deleteBtn);
+      li.appendChild(editBtn);
+    }
+    function dataHandler(event, handler) {
+      let userid = event.target.parentElement.innerText;
+      users.removeChild(event.target.parentElement);
+      let ppname = userid.split(" - ")[1];
+      axios
+        .get("https://crudcrud.com/api/bd3c794d19ed4d02b753723ce5394527/SD")
+        .then((response) => {
+          resolve.data.forEach((p) => {
+            if (p.Product === namep) {
+              if (handler) {
+                P.value = p.Product;
+                inputName.value = p.Price;
+              }
+
+              totalPrice.textContent =
+                parseInt(totalPrice.textContent) + parseInt(p.Price);
+              axios
+                .delete(
+                  `https://crudcrud.com/api/bd3c794d19ed4d02b753723ce5394527/SD/${p._id}`
+                )
+                .then((event) => console.log(event))
+                .catch((event) => console.log(event));
+            }
+          });
+        })
+        .catch((event) => console.log(event));
+    }
+    products.addEventListener("click", (event) => {
+      if (event.target.classList.contains("delete")) dataHandler(event, false);
+
+      if (event.target.classList.contains("edit")) dataHandler(event, true);
+    });
   </script>
 </html>
