@@ -1,19 +1,18 @@
 //a component in react is just a js function.
+import React from 'react';
+import ExpenseDate from "./ExpenseDate";
+import Card from "./Card";
+import "./ExpenseItem.css";
 
-
-function ExpenseItem() {
+const ExpenseItem =(props)=> {
   return (
-    <div className="expense-item">
-      
+    <Card className="expense-item">
+      <ExpenseDate date={props.date}/>
       <div className="expense-item__description">
-        <h2>Food Rs.10</h2>
-        <h2>petrol Rs.100 </h2>
-        <h2>Movies Rs.200 </h2>
+        <h2>{props.title}</h2>
+        <div className="expense-item__price">${props.amount}</div>
       </div>
-      <div className="expense-item__price"></div>
-
-    </div>
+    </Card>
   );
-
 }
 export default ExpenseItem;
