@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useState} from 'react';
 
 import ExpenseDate from './ExpenseDate';
 import Card from './Card';
 import './ExpenseItem.css';
 
 const ExpenseItem = (props) => {
+
+  const [title, setTitle]= useState(props.title);
+ console.log('ExpenseItem evaluated by React');
+
+    // const addhandler =() => {
+
+    //   const newExp = [...title];
+    //   newExp=100;
+    //   setTitle(newExp);
+     
+    // }
+
     const clickHandler = () => {
-        console.log('Clicked!!!!!')
+      setTitle('Updated');
+      console.log(title);
     };
+
   return (
+
     <Card className='expense-item'>
       <ExpenseDate date={props.date} />
       <div className='expense-item__description'>
-        <h2>{props.title}</h2>
+        <h2>{title}</h2>
         <div className='expense-item__price'>${props.amount}</div>
       </div>
       <button onClick={clickHandler}>Change Title</button>
-      <button> DeleteExpense</button>
+  {/* <button onClick={addhandler}> Set to $100</button> */}
     </Card>
   );
 }
